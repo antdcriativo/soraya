@@ -166,7 +166,7 @@
       showSlide();
     }
 
-    let autoplay = setInterval(nextSlide, 3000);
+    let autoplay = setInterval(nextSlide, 7000);
 
     // Swipe / Drag
     let startX = 0;
@@ -191,13 +191,13 @@
         }
         showSlide();
         isDragging = false;
-        autoplay = setInterval(nextSlide, 3000);
+        autoplay = setInterval(nextSlide, 7000);
       }
     }
 
     function onTouchEnd() {
       isDragging = false;
-      autoplay = setInterval(nextSlide, 3000);
+      autoplay = setInterval(nextSlide, 7000);
     }
 
     const slider = document.querySelector(".slider");
