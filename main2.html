@@ -191,13 +191,13 @@
         }
         showSlide();
         isDragging = false;
-        autoplay = setInterval;
+        autoplay = setInterval(nextSlide);
       }
     }
 
     function onTouchEnd() {
       isDragging = false;
-      autoplay = setInterval;
+      autoplay = setInterval(nextSlide);
     }
 
     const slider = document.querySelector(".slider");
