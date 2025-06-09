@@ -166,7 +166,7 @@
       showSlide();
     }
 
-    let autoplay = setInterval;
+    let autoplay = setInterval(nextSlide, 3000);
 
     // Swipe / Drag
     let startX = 0;
@@ -191,7 +191,7 @@
         }
         showSlide();
         isDragging = false;
-        autoplay = setInterval(nextSlide, 5000);
+        autoplay = setInterval;
       }
     }
 
