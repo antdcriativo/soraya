@@ -7,7 +7,7 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💌</text></svg>">
   <style>
     body {
-      background-color: #001f3f; /* azul escuro */
+      background-color: #001f3f;
       color: white;
       font-family: Arial, sans-serif;
       text-align: center;
@@ -24,11 +24,12 @@
       width: 253px;
       margin: auto;
       overflow: hidden;
+      touch-action: pan-y;
     }
 
     .slides {
       display: flex;
-      width: 253px;
+      width: max-content;
       transition: transform 0.5s ease;
     }
 
@@ -37,6 +38,7 @@
       height: auto;
       object-fit: cover;
       border-radius: 10px;
+      flex-shrink: 0;
     }
 
     h3 {
@@ -61,7 +63,6 @@
       line-height: 1.6;
     }
 
-    /* Estilo dos corações caindo */
     .heart {
       position: fixed;
       top: -2em;
@@ -88,20 +89,15 @@
       heart.classList.add('heart');
       heart.textContent = '💗';
       heart.style.left = Math.random() * 100 + 'vw';
-      heart.style.animationDuration = (Math.random() * 3 + 2) + 's'; // 2-5 segundos
+      heart.style.animationDuration = (Math.random() * 3 + 2) + 's';
       heart.style.fontSize = (Math.random() * 10 + 20) + 'px';
-
       document.body.appendChild(heart);
-
-      setTimeout(() => {
-        heart.remove();
-      }, 5000); // Remover após cair
+      setTimeout(() => heart.remove(), 5000);
     }
-
-    setInterval(criarCoracao, 300); // a cada 300ms um coração novo
+    setInterval(criarCoracao, 300);
   </script>
 
-  <!-- Spotify player embed -->
+  <!-- Spotify player -->
   <iframe src="https://open.spotify.com/embed/track/0YvWYuozljvaJzFMUNAV8F?utm_source=generator"
     width="300" height="80" frameborder="0"
     allow="clipboard-write; encrypted-media; fullscreen; picture-in-picture"
@@ -132,14 +128,13 @@
     Eu te amo verdadeiramente ❤️
   </p>
 
+  <!-- Script do contador + carrossel com autoplay + swipe -->
   <script>
-    // Contador desde 4 de março de 2023 com tempo completo
+    // Contador
     const dataInicial = new Date("2023-03-04T00:00:00");
-
     function atualizaContador() {
       const agora = new Date();
       const diff = agora - dataInicial;
-
       const segundosTotais = Math.floor(diff / 1000);
       const anos = Math.floor(segundosTotais / (365.25 * 24 * 60 * 60));
       const meses = Math.floor((segundosTotais % (365.25 * 24 * 60 * 60)) / (30.44 * 24 * 60 * 60));
@@ -147,28 +142,72 @@
       const horas = Math.floor((segundosTotais % (24 * 60 * 60)) / (60 * 60));
       const minutos = Math.floor((segundosTotais % (60 * 60)) / 60);
       const segundos = segundosTotais % 60;
-
       document.getElementById("contador").innerText =
         `${anos} anos ${meses} meses ${dias} dias ` +
         `${horas.toString().padStart(2, '0')}h ` +
         `${minutos.toString().padStart(2, '0')}m ` +
         `${segundos.toString().padStart(2, '0')}s`;
     }
-
     atualizaContador();
     setInterval(atualizaContador, 1000);
 
-    // Carrossel de imagens com autoplay
+    // Carrossel com autoplay + swipe
+    const slides = document.getElementById("slides");
+    const totalSlides = slides.children.length;
+    const slideWidth = 253;
     let index = 0;
+
     function showSlide() {
-      const slides = document.getElementById("slides");
-      slides.style.transform = `translateX(-${253 * index}px)`;
+      slides.style.transform = `translateX(-${slideWidth * index}px)`;
     }
+
     function nextSlide() {
-      index = (index + 1) % 8;
+      index = (index + 1) % totalSlides;
       showSlide();
     }
-    setInterval(nextSlide, 3000);
+
+    let autoplay = setInterval(nextSlide, 3000);
+
+    // Swipe / Drag
+    let startX = 0;
+    let isDragging = false;
+
+    function onTouchStart(e) {
+      startX = e.touches ? e.touches[0].clientX : e.clientX;
+      isDragging = true;
+      clearInterval(autoplay);
+    }
+
+    function onTouchMove(e) {
+      if (!isDragging) return;
+      const currentX = e.touches ? e.touches[0].clientX : e.clientX;
+      const diff = startX - currentX;
+
+      if (Math.abs(diff) > 50) {
+        if (diff > 0) {
+          index = (index + 1) % totalSlides;
+        } else {
+          index = (index - 1 + totalSlides) % totalSlides;
+        }
+        showSlide();
+        isDragging = false;
+        autoplay = setInterval(nextSlide, 3000);
+      }
+    }
+
+    function onTouchEnd() {
+      isDragging = false;
+      autoplay = setInterval(nextSlide, 3000);
+    }
+
+    const slider = document.querySelector(".slider");
+    slider.addEventListener("touchstart", onTouchStart);
+    slider.addEventListener("touchmove", onTouchMove);
+    slider.addEventListener("touchend", onTouchEnd);
+    slider.addEventListener("mousedown", onTouchStart);
+    slider.addEventListener("mousemove", onTouchMove);
+    slider.addEventListener("mouseup", onTouchEnd);
+    slider.addEventListener("mouseleave", onTouchEnd);
   </script>
 
 </body>
